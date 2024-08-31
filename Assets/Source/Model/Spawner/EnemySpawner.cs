@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using View;
+using System.Linq;
 
 public class EnemySpawner
 {
@@ -79,7 +80,7 @@ public class EnemySpawner
     {
         foreach (var enemy in enemys)
         {
-            Subscribe(enemy.Health,SubscriptionType.Unsubscribe);
+            Subscribe(enemy,SubscriptionType.Unsubscribe);
             _enemyViewFactory.Destroy(enemy);
         }
 
@@ -90,28 +91,29 @@ public class EnemySpawner
 
     private DefoltEnemy CreatDefoltEnemy()
     {
-        EnemyHealth enemyHealth = new EnemyHealth(_conffig.DefoltEnemy.MaxHealth, _conffig.DefoltEnemy.MaxHealth);
-        Enemy enemy = new DefoltEnemy(_conffig.DefoltEnemy.Speed,_player)
-            .BindEnemyHealth(enemyHealth);
+        Health enemyHealth = new Health(_conffig.DefoltEnemy.MaxHealth, _conffig.DefoltEnemy.MaxHealth);
+        Enemy enemy = new DefoltEnemy(_conffig.DefoltEnemy.Speed,_player,enemyHealth);
 
-        Subscribe(enemyHealth, SubscriptionType.Subscribe);
+        Subscribe(enemy, SubscriptionType.Subscribe);
         return enemy as DefoltEnemy;
     }
 
-    private void Subscribe(EnemyHealth health,SubscriptionType type)
+    private void Subscribe(Enemy health,SubscriptionType type)
     {
         if (type == SubscriptionType.Subscribe)
-        {
             health.onDeath += _wallet.OnKill;
-        }
         else
-        {
             health.onDeath -= _wallet.OnKill;
-        }
     }
 
     private void Instantiate(Enemy enemy, Vector3 position, Quaternion rotation)
-    => _enemyViewFactory.Creat(enemy, position, rotation, _enemyVisiter.CurentPoolObject.AddObject);
+    { 
+        _enemyViewFactory.Creat(enemy, position, rotation, (enemy, gameObject) =>
+        {
+            _enemyVisiter.CurentPoolObject.AddObject(enemy, gameObject);
+            enemy.BindDamageCollider(gameObject.GetComponentsInChildren<Collider>().Where(colider => colider.gameObject.layer == Constant.LayerFeet).ToArray());
+        });
+    }
 
     private enum SubscriptionType
     {

@@ -2,7 +2,6 @@ using View;
 using Model;
 using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace Menager
 {
@@ -16,50 +15,45 @@ namespace Menager
         [SerializeField] private EndGameView _endGameView;
         [SerializeField] private ExitMenuView _exitMenuView;
         [SerializeField] private GamplayMenuView _gamplayMenuView;
-        [SerializeField] private List<PhysicsEventBroadcaster> _player;
-        [SerializeField] private List<PhysicsEventBroadcaster> _feetListPlayer;
+        [SerializeField] private GameObject _playerPrefab;
 
         private Fsm _fsm;
-
-        private bool _isActivate;
+        private bool _isInitialized;
 
         public void ServiceLocatorInitialized(ServiceLocator locator,EnemyRegistry registry,CoordinateGenerator generator,Mediator mediator,InputRouter router)
         => ServiceInitialized.RegisterService(locator, registry, generator, _enemyViewFactory, mediator, _playerConffig, _enemySpawnerConffig, router);
 
-        public void Activate(Player player,PlayerHealth health,ServiceLocator locator)
+        public void Init(Player player,Health health,ServiceLocator locator)
         {
-            Physics.IgnoreLayerCollision(Constant.LayerIgnoreCollisionPathEntity,Constant.LayerPathEntity);
-
             if (_fsm == null)
             {
                 _fsm = new Fsm();
                 _fsm.BindState(new GUIInitializedState(this, health, locator.GetSevice<Mediator>(), _endGameView, _exitMenuView, _gamplayMenuView, _fsm))
-                    .BindState(new PhysicsRoutingState(player,_feetListPlayer,_player,this, locator.GetSevice<PhysicsRouter>(), _fsm))
+                    .BindState(new PhysicsRoutingState(player,_playerPrefab,this, locator.GetSevice<PhysicsRouter>(), _fsm))
                     .BindState(new IdelState(_fsm));
             }
 
             _fsm.SetState<GUIInitializedState>();
-            _isActivate = true;
-            enabled = true;
+            _isInitialized = true;
         }
 
         public void Enable()
         {
-            if (_isActivate == false)
+            if (_isInitialized == false)
                 throw new InvalidOperationException();
 
-            OnEnable();
+            enabled = true;
         }
 
         public void Disable()
-        => OnDisable();
+        => enabled = false;
 
         public void AllStop()
         {
             _playerManager.AllStop();
             _enemyManager.AllStop();
             _fsm.SetState<IdelState>();
-            _isActivate = false;
+            _isInitialized = false;
         }
 
         private void OnEnable()

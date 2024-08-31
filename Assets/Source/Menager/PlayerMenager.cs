@@ -27,7 +27,10 @@ namespace Menager
         }
 
         public void AllStop()
-        => _controller.Disable();
+        {
+            Disable();
+            _controller.AllStop();
+        }
 
         private void OnDisable()
         => _controller.Disable();

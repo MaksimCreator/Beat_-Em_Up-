@@ -1,7 +1,6 @@
 ﻿using Model;
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace View
 {
@@ -9,25 +8,21 @@ namespace View
     {
         private readonly PhysicsRouter _router;
         private readonly MonoBehaviour _monoBehaviour;
-        private readonly List<PhysicsEventBroadcaster> _playerPath;
-        private readonly List<PhysicsEventBroadcaster> _feetList;
+        private readonly GameObject _prefab;
         private readonly Player _player;
 
-        public PhysicsRoutingState(Player player,List<PhysicsEventBroadcaster> feetList, List<PhysicsEventBroadcaster> playerPhysicsEventBroadcaster, MonoBehaviour monoBehaviour, PhysicsRouter router,Fsm fsm) : base(fsm)
+        public PhysicsRoutingState(Player player,GameObject prefab, MonoBehaviour monoBehaviour, PhysicsRouter router,Fsm fsm) : base(fsm)
         {
-            _playerPath = playerPhysicsEventBroadcaster;
-            _feetList = feetList;
+            _prefab = prefab;
+            _player = player;
             _monoBehaviour = monoBehaviour;
             _router = router;
         }
 
         public override void Enter()
         {
-            foreach (var item in _playerPath)
-                item.Init(_player, _router);
-
-            foreach (var item in _feetList)
-                item.Init(new Feet(), _router);
+            Initialized.InitializedChildrenPhysicsEventBroadcaster(_player,_router, _prefab, _player);
+            Initialized.InitializedIgnoreCollider(_prefab);
 
             _monoBehaviour.StartCoroutine(GetRouterSteper());
         }

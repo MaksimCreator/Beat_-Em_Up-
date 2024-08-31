@@ -18,6 +18,11 @@ public class PhysicsEventBroadcaster : MonoBehaviour
     private void TryBindCollision(GameObject model)
     {
         if (model.TryGetComponent(out PhysicsEventBroadcaster broadcaster))
+        {
+            if (broadcaster._model is Feet feet)
+                feet.DisableCollider();
+
             _router.TryAddCollision(_model, broadcaster._model);
+        }
     }
 }

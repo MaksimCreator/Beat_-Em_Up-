@@ -7,10 +7,7 @@ namespace Model
     {
         public IEnumerable<Record> Values()
         {
-            yield return new Record<Feet, Enemy>((feet, enemy) =>
-            {
-                enemy.TakaDamage(feet.Damage);
-            });
+            yield return new Record<Feet, Entity>((feet, entity) => entity.TakeDamage(feet.Damage));
         }
     }
 }

@@ -27,7 +27,10 @@ namespace Menager
         => enabled = false;
 
         public void AllStop()
-        => _controller.AllStop();
+        { 
+            _controller.AllStop();
+            Disable();
+        }
 
         private void Update()
         => _controller.Update(Time.deltaTime);

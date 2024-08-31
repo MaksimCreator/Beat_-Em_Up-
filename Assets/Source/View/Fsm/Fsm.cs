@@ -7,9 +7,6 @@ public class Fsm : IUpdateble
     private FsmState _curentState;
     private Dictionary<Type, FsmState> _states = new();
 
-    public bool IsState<T>() where T : FsmState
-    => _curentState.GetType() == typeof(T);
-
     public void SetState<T>() where T : FsmState
     {
         var type = typeof(T);

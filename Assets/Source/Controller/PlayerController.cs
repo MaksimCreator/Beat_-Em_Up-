@@ -6,13 +6,13 @@ public class PlayerController
 {
     private readonly Fsm _fsmMovemeng = new();
     private readonly Fsm _fsmAttack = new();
-    private readonly PlayerMovemeng _PlayerMovemeng;
+    private readonly PlayerMovemeng _playerMovemeng;
     private readonly InputRouter _router;
     private readonly CameraMovement _cameraMovemeng;
 
     public PlayerController(CharacterController characterController,Camera camera,InputRouter inputRouter,Animator animator,Transform transformPlayer,Player player)
     {
-        _PlayerMovemeng = new PlayerMovemeng(inputRouter, player);
+        _playerMovemeng = new PlayerMovemeng(inputRouter, player);
         _cameraMovemeng = new CameraMovement(camera.transform,transformPlayer);
         _router = inputRouter;
 
@@ -22,15 +22,14 @@ public class PlayerController
             .BindState(new PlayerMovemengState(characterController, inputRouter, player, EntityAnimator, _fsmMovemeng));
 
         _fsmAttack.BindState(new PlayerIdelAttackState(inputRouter,EntityAnimator,_fsmAttack))
-            .BindState(new PlayerAttakState(EntityAnimator,_fsmAttack));
+            .BindState(new PlayerAttakState(player,EntityAnimator,_fsmAttack));
 
-        _fsmMovemeng.SetState<PlayerIdelMovemengState>();
-        _fsmAttack.SetState<PlayerIdelAttackState>();
+        ActiveIdelState();
     }
 
     public void Update(float delta)
     {
-        _PlayerMovemeng.Update(delta);
+        _playerMovemeng.Update(delta);
         _cameraMovemeng.Update();
         _fsmAttack.Update();
         _fsmMovemeng.Update();
@@ -41,4 +40,13 @@ public class PlayerController
 
     public void Disable()
     => _router.Disable();
+
+    public void AllStop()
+    => ActiveIdelState();
+
+    private void ActiveIdelState()
+    {
+        _fsmMovemeng.SetState<PlayerIdelMovemengState>();
+        _fsmAttack.SetState<PlayerIdelAttackState>();
+    }
 }

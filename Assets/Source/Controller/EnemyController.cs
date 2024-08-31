@@ -48,7 +48,7 @@ public class EnemyController
 
         fsm.BindState(new EnemyIdelState(enemy, fsm))
             .BindState(new EnemyMovemegState(enemy,fsm))
-            .BindState(new EnemyAttakState(new EntityAnimator(enemy.Animator),fsm))
+            .BindState(new EnemyAttakState(enemy,new EntityAnimator(enemy.Animator),fsm))
             .BindState(new EnemyDestroyState(() => _spawner.Disable(enemy),new EntityAnimator(enemy.Animator),fsm));
 
         fsm.SetState<EnemyIdelState>();

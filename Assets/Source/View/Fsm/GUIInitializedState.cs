@@ -10,10 +10,10 @@ namespace View
         private readonly ExitMenuView _exitMenuView;
         private readonly EndGameView _endGameView;
         private readonly Mediator _mediator;
-        private readonly PlayerHealth _health;
+        private readonly Health _health;
         private readonly GamplayMenager _gamplayManager;
 
-        public GUIInitializedState(GamplayMenager manager,PlayerHealth health,Mediator mediator,EndGameView endGameView,ExitMenuView exitMenuView,GamplayMenuView gamplayMenuView,Fsm fsm) : base(fsm)
+        public GUIInitializedState(GamplayMenager manager,Health health,Mediator mediator,EndGameView endGameView,ExitMenuView exitMenuView,GamplayMenuView gamplayMenuView,Fsm fsm) : base(fsm)
         {
             _health = health;
             _mediator = mediator;
@@ -30,6 +30,7 @@ namespace View
                 _exitMenuView.Enable(_mediator.Score);
                 _gamplayManager.Disable();
             },_mediator);
+
             _exitMenuView.Init(() => SceneManager.LoadScene(Constant.StartMenuScenes), () =>
             {
                 _gamplayMenuView.Enable();

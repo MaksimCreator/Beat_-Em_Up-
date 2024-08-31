@@ -16,31 +16,31 @@ namespace Model
         }
 
         public void EnterBackMove()
-        => _entityAnimator.CrossFade(ConstantAnimation.MoveBakc,0.1f,Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.MoveBakc, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterRightMove()
-        => _entityAnimator.CrossFade(ConstantAnimation.MoveRight, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.MoveRight, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterForwardMove()
-        => _entityAnimator.CrossFade(ConstantAnimation.MoveForward,0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.MoveForward, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterRun()
-        => _entityAnimator.CrossFade(ConstantAnimation.Run, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.Run, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterMoveLeft()
-        => _entityAnimator.CrossFade(ConstantAnimation.MoveLeft, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.MoveLeft, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterDeath()
-        => _entityAnimator.CrossFade(ConstantAnimation.Death, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.Death, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterIdelMovemeng()
-        => _entityAnimator.CrossFade(ConstantAnimation.Idel, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.Idel, 0.1f, Constant.AnimationLayerMovemeg));
 
         public void EnterIdelAttack()
-        => _entityAnimator.CrossFade(ConstantAnimation.Idel, 0.1f, Constant.AnimationLayerAttack);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.Idel, 0.1f, Constant.AnimationLayerAttack));
 
         public void EnterKick()
-        => _entityAnimator.CrossFade(ConstantAnimation.Kick, 0.1f, Constant.AnimationLayerMovemeg);
+        => TryEnterAnimation(() => _entityAnimator.CrossFade(ConstantAnimation.Kick, 0.1f, Constant.AnimationLayerMovemeg));
 
         public float GetLengchClip(int animationHash)
         {
@@ -62,6 +62,12 @@ namespace Model
             }
 
             throw new InvalidOperationException();
+        }
+
+        private void TryEnterAnimation(Action enterAnimation)
+        {
+            if (_entityAnimator != null)
+                enterAnimation();
         }
     }
 }

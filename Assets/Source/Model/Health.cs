@@ -2,10 +2,12 @@
 
 namespace Model
 {
-    public abstract class Health : IHealthEntityData
+    public class Health : IHealthEntityData
     {
         private const int _minHealth = 0;
         private readonly int _maxHealth;
+
+        public event Action onDeath;
 
         public int MaxHealth => _maxHealth;
         public int MinHealth { get; }
@@ -25,7 +27,7 @@ namespace Model
             if (CurentHealth - damage <= MinHealth)
             {
                 CurentHealth = 0;
-                OnDeath();
+                onDeath.Invoke();
             }
             else
             {
@@ -33,7 +35,5 @@ namespace Model
             }
 
         }
-
-        protected abstract void OnDeath();
     }
 }

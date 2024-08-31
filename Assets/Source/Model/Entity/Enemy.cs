@@ -7,12 +7,13 @@ namespace Model
     {
         private const int _minDistanceUnit = 1;
 
+        private readonly Health _health;
         private IPosition _targetPosition;
         private bool _isEnable;
 
-        public CharacterController CharacterController { get; private set; }
+        public event Action<Enemy> onDeath;
 
-        public EnemyHealth Health { get; private set; }
+        public CharacterController CharacterController { get; private set; }
 
         public Animator Animator { get; private set; }
 
@@ -26,9 +27,11 @@ namespace Model
 
         public bool isEnd { get; private set; }
 
-        protected Enemy(float speed,Player player) : base(speed)
+        protected Enemy(float speed,Player player,Health health) : base(speed)
         {
             _targetPosition = player;
+            _health = health;
+            _health.onDeath += () => onDeath(this);
         }
 
         public void Update(float delta)
@@ -55,7 +58,7 @@ namespace Model
                 return;
 
             _isEnable = true;
-            Health.onDeath += (enemy) => isEnd = false;
+            onDeath += (enemy) => isEnd = true;
         }
 
         public void Disable()
@@ -64,7 +67,11 @@ namespace Model
                 return;
 
             _isEnable = false;
-            Health.onDeath -= (enemy) => isEnd = false;
+            isMovemeng = false;
+            isAttack = false;
+            isEnd = false;
+
+            onDeath -= (enemy) => isEnd = true;
         }
 
         public void StartMovemeng(CharacterController characterControlle,Transform transform,Animator animator)
@@ -78,14 +85,8 @@ namespace Model
             isEnd = false;
         }
 
-        public Enemy BindEnemyHealth(EnemyHealth health)
-        { 
-            Health = health;
-            return this;
-        }
-
-        public void TakaDamage(int damage)
-        => Health.TakeDamage(damage);
+        public override void TakeDamage(float damage)
+        => _health.TakeDamage((int)damage);
 
         public void Stop()
         {
@@ -107,4 +108,9 @@ namespace Model
             return isAttack;
         }
     }
+}
+public interface IColliderControl
+{
+    void EnableColliders();
+    void DisableColliders();
 }

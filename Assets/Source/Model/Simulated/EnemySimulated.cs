@@ -45,10 +45,7 @@ namespace Model
         private void Destroy(IEnumerable<Enemy> enemys)
         {
             foreach (var enemy in enemys)
-            {
-                enemy.Stop();
                 enemy.Disable();
-            }
 
             OnDistroy -= Destroy;
             onStart -= StartSimulate;

@@ -47,7 +47,8 @@ public class PoolObject<T> where T : class
         {
             if (_poolModel[i].Equals(model))
             {
-                _poolGameObject[i].SetActive(false);
+                if (_poolGameObject[i] != null)
+                    _poolGameObject[i].SetActive(false);
                 return;
             }
         }

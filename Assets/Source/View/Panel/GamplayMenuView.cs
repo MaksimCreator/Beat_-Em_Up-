@@ -40,14 +40,24 @@ namespace View
             if (_isInitialized == false)
                 throw new InvalidOperationException(nameof(_isInitialized));
 
-            OnEnable();
+            if (enabled != true)
+            {
+                enabled = true;
+                OnEnable();
+            }
         }
 
         public void Disable()
-        => OnDisable();
+        { 
+            if (enabled != false)
+            {
+                OnDisable();
+                enabled = false;
+            }
+        }
 
         private void OnEnable()
-        { 
+        {
             gameObject.SetActive(true);
             StartCoroutine(Updateble());
         }
@@ -60,11 +70,15 @@ namespace View
 
         private IEnumerator Updateble()
         {
-            while (_mediator != null)
+            while (true)
             {
                 yield return new WaitForSeconds(0.4f);
-                _score.text = _mediator.Score.ToString();
-                _health.value = _mediator.CurentHealth;
+
+                if (_mediator != null)
+                {
+                    _score.text = _mediator.Score.ToString();
+                    _health.value = _mediator.CurentHealth;
+                }
             }
         }
     }

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: New Defolt Enemy Conffig
   m_EditorClassIdentifier: 
   _speed: 4
-  _maxHealth: 40
+  _maxHealth: 20

@@ -24,8 +24,8 @@ public class GamplayEntryPoint : MonoBehaviour
 
     private void Awake()
     {
-        PlayerHealth health = new PlayerHealth(_conffig.MaxHealth,_conffig.MaxHealth);
-        Player player = new Player(_conffig,_playerTransform);
+        Health health = new Health(_conffig.MaxHealth,_conffig.MaxHealth);
+        Player player = new Player(_conffig,_playerTransform).BindHealth(health);
         EnemyRegistry enemyRegistry = new EnemyRegistry();
 
         CoordinateGenerator generator = new CoordinateGenerator(enemyRegistry, _map, player, _originalMapLength);
@@ -40,7 +40,7 @@ public class GamplayEntryPoint : MonoBehaviour
 
         _playerManager.Init(_characterController,_mainCamera,router, _playerAnimator, _playerTransform, player);
         _enemyManager.Init(enemyController);
-        _gamplayManager.Activate(player, health, _serviceLocator);
+        _gamplayManager.Init(player, health, _serviceLocator);
     }
 
     private void OnEnable()
